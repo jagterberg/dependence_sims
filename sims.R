@@ -13,7 +13,7 @@ simulate_Erdos_renyi <- function(n,p) {
 Rcpp::sourceCpp("generate_corr_sbm.cpp")
 
 
-ns <- seq(1000,10000,500)
+ns <- seq(1000,8000,500)
 #n <- 4000
 p <- .4
 a <- .7
