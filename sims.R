@@ -1,8 +1,7 @@
-if (!require(igraph)) {
-  install.packages("igraph")
-  library(igraph)
-}
+library(Matrix)
+library(irlba)
 
+library(Rcpp)
 
 simulate_Erdos_renyi <- function(n,p) {
   A <- Matrix(0,n,n)
