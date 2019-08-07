@@ -13,7 +13,7 @@ simulate_Erdos_renyi <- function(n,p) {
 Rcpp::sourceCpp("generate_corr_sbm.cpp")
 
 
-ns <- seq(1000,8000,500)
+ns <- seq(200,1000,200)
 #n <- 4000
 p <- .4
 a <- .7
@@ -51,24 +51,10 @@ for (n in ns) {
 
 library(ggplot2)
 
-jpeg('rplot.jpg')
+
 dat <- data.frame(naive = vech2,off_diag =vech2,n = ns)
-g <- ggplot(dat, aes(x = n))
-g +   geom_line(aes(y = naive, col = 'Variable Name A'),lwd = 1) +
-  geom_line(aes(y = off_diag, col = 'Variable Name B'),lwd = 1)  +
-  theme_bw() +
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
-  theme(plot.title = element_text(size = 10,hjust = 0.5))+
-  ggtitle( 'Estimated Eigenvectors Minus true eigenvectors error (up to sign)') +
-  ylab('Error')  + xlab('n') +
-  theme(axis.title.y = element_text(size = 10)) +
-  theme(axis.title.x = element_text(size =10)) +
-  scale_linetype_manual(values = c('dashed','solid'),
-                        labels= c('naive estimage','padded off-diagonal')
-                        ,name = "") 
 
-dev.off()
-
+save(dat,file = "output.RData")
   
 
 
@@ -76,9 +62,23 @@ dev.off()
 
 
 
+#load("output.RData)
+#jpeg('rplot.jpg')
+#g <- ggplot(dat, aes(x = n))
+#g +   geom_line(aes(y = naive, linetype = 'Variable Name A'),lwd = 1) +
+#  geom_line(aes(y = off_diag, linetype = 'Variable Name B'),lwd = 1)  +
+#  theme_bw() +
+#  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
+#  theme(plot.title = element_text(size = 10,hjust = 0.5))+
+#  ggtitle( 'Estimated Eigenvectors Minus true eigenvectors error (up to sign)') +
+#  ylab('Error')  + xlab('n') +
+#  theme(axis.title.y = element_text(size = 10)) +
+#  theme(axis.title.x = element_text(size =10)) +
+#  scale_linetype_manual(values = c('dashed','solid'),
+#                        labels= c('naive estimage','padded off-diagonal')
+#                        ,name = "") 
 
-
-
+#dev.off()
 
 
 
