@@ -14,9 +14,9 @@ NumericMatrix simulate_corr_SBM(double a,double b,NumericMatrix Aer,double rho,d
   int br = 0;
   
   for (int i = 0; i < n; i++) {
-    for (int j = i; j <= n ; j++) {
-      //double r = ((double) rand() / (RAND_MAX));
-      double r = .04;
+    for (int j = 0; j <= i ; j++) {
+      double r = ((double) rand() / (RAND_MAX));
+      
       if (i < n/2 && j < n/2) { 
         double param1 = a +(rho/p)* pow((p*a*(1-p)*(1-a)),.5);
         double param2 = (a - param1*p)/(1-p);
