@@ -20,7 +20,7 @@ a <- .03
 b <- .07
 corr = .4
 
-sims <- 4
+sims <- 200
 
 vech1 <- rep(0,length(ns))
 vech2 <- rep(0,length(ns))
