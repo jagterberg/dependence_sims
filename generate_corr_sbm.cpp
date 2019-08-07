@@ -42,13 +42,6 @@ NumericMatrix simulate_corr_SBM(double a,double b,NumericMatrix Aer,double rho,d
           }
         }
       }
-      
-      
-      
-      
-      
-
-      
       A(i,j) = br;
       A(j,i) = A(i,j);
       br = 0;

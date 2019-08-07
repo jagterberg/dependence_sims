@@ -10,8 +10,8 @@ simulate_Erdos_renyi <- function(n,p) {
   return(A)
 }
 
-
-
+Rcpp::sourceCpp("generate_corr_sbm.cpp")
+print("Sourced C++ Code, beginning simulations...")
 
 ns <- seq(500,10000,500)
 #n <- 4000
@@ -27,9 +27,9 @@ vech2 <- rep(0,length(ns))
 j <- 1
 for (n in ns) {
   omega <- log(n)
-  print(paste0("n = ",n))
+  print(paste0("simulations for n = ",n))
   for (i in 1:sims) {
-    Rcpp::sourceCpp("generate_corr_sbm.cpp")
+    
     A1 <- simulate_Erdos_renyi(n,p)
     A2 <- Matrix(simulate_corr_SBM(a,b,as.matrix(A1),corr,p))
     Mhat_naive <- bdiag(A1,A2)
