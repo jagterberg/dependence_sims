@@ -27,7 +27,7 @@ vech2 <- rep(0,length(ns))
 j <- 1
 for (n in ns) {
   omega <- log(n)
-  
+  print("n = ",n)
   for (i in 1:sims) {
     Rcpp::sourceCpp("generate_corr_sbm.cpp")
     A1 <- simulate_Erdos_renyi(n,p)
