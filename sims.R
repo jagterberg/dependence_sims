@@ -10,17 +10,17 @@ simulate_Erdos_renyi <- function(n,p) {
   return(A)
 }
 
-Rcpp::sourceCpp("generate_corr_sbm.cpp")
 
 
-ns <- seq(200,1000,200)
+
+ns <- seq(500,10000,500)
 #n <- 4000
-p <- .4
-a <- .7
-b <- .1
-corr = .1
+p <- .05
+a <- .03
+b <- .07
+corr = .4
 
-sims <- 1
+sims <- 4
 
 vech1 <- rep(0,length(ns))
 vech2 <- rep(0,length(ns))
@@ -29,6 +29,7 @@ for (n in ns) {
   omega <- log(n)
   
   for (i in 1:sims) {
+    Rcpp::sourceCpp("generate_corr_sbm.cpp")
     A1 <- simulate_Erdos_renyi(n,p)
     A2 <- Matrix(simulate_corr_SBM(a,b,as.matrix(A1),corr,p))
     Mhat_naive <- bdiag(A1,A2)
@@ -63,22 +64,22 @@ save(dat,file = "output.RData")
 
 
 #load("output.RData)
-#jpeg('rplot.jpg')
-#g <- ggplot(dat, aes(x = n))
-#g +   geom_line(aes(y = naive, linetype = 'Variable Name A'),lwd = 1) +
-#  geom_line(aes(y = off_diag, linetype = 'Variable Name B'),lwd = 1)  +
-#  theme_bw() +
-#  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
-#  theme(plot.title = element_text(size = 10,hjust = 0.5))+
-#  ggtitle( 'Estimated Eigenvectors Minus true eigenvectors error (up to sign)') +
-#  ylab('Error')  + xlab('n') +
-#  theme(axis.title.y = element_text(size = 10)) +
-#  theme(axis.title.x = element_text(size =10)) +
-#  scale_linetype_manual(values = c('dashed','solid'),
-#                        labels= c('naive estimage','padded off-diagonal')
-#                        ,name = "") 
+jpeg('rplot.jpg')
+g <- ggplot(dat, aes(x = n))
+g +   geom_line(aes(y = naive, linetype = 'Variable Name A'),lwd = 1) +
+  geom_line(aes(y = off_diag, linetype = 'Variable Name B'),lwd = 1)  +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
+  theme(plot.title = element_text(size = 10,hjust = 0.5))+
+  ggtitle( 'Estimated Eigenvectors Minus true eigenvectors error (up to sign)') +
+  ylab('Error')  + xlab('n') +
+  theme(axis.title.y = element_text(size = 10)) +
+  theme(axis.title.x = element_text(size =10)) +
+  scale_linetype_manual(values = c('dashed','solid'),
+                        labels= c('naive estimage','padded off-diagonal')
+                        ,name = "") 
 
-#dev.off()
+dev.off()
 
 
 
