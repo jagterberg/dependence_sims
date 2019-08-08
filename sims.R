@@ -1,6 +1,8 @@
 library(Matrix)
 library(irlba)
-
+if (!require(ggplot2)) {
+  install.packages(ggplot2)
+}
 library(Rcpp)
 
 simulate_Erdos_renyi <- function(n,p) {
@@ -13,14 +15,14 @@ simulate_Erdos_renyi <- function(n,p) {
 Rcpp::sourceCpp("generate_corr_sbm.cpp")
 print("Sourced C++ Code, beginning simulations...")
 
-ns <- seq(500,6000,500)
+ns <- seq(500,5000,500)
 #n <- 4000
 p <- .05
 a <- .03
 b <- .07
 corr = .4
 
-sims <- 10
+sims <- 5
 
 vech1 <- rep(0,length(ns))
 vech2 <- rep(0,length(ns))
