@@ -23,7 +23,7 @@ a <- .03
 b <- .07
 corr = .4
 
-sims <- 5
+sims <- 10
 
 vech1 <- rep(0,length(ns))
 vech2 <- rep(0,length(ns))
@@ -48,7 +48,7 @@ for (n in ns) {
     vech1[j] <- vech1[j] + min(min(abs(sqrt(2*n)*uhat_better - 1),min(abs(sqrt(2*n)*uhat_better + 1))))
     vech2[j] <- vech2[j] + min(min(abs(sqrt(2*n)*uhat_naive - 1),min(abs(sqrt(2*n)*uhat_naive + 1))))
   }
-  vech1[j] <- vech1[j]/sims
+  vech1[j] <- vech1[j]/sims 
   vech2[j] <- vech2[j]/sims
   j <- j+1
   
@@ -57,9 +57,9 @@ for (n in ns) {
 
 
 
-dat <- data.frame(naive = vech2,off_diag =vech2,n = ns)
+dat <- data.frame(naive = vech2,off_diag =vech1,n = ns)
 
-save(dat,file = "output.RData")
+#save(dat,file = "output.RData")
   
 
 
