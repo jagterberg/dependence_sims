@@ -1,7 +1,7 @@
 library(Matrix)
 library(irlba)
 if (!require(ggplot2)) {
-  install.packages(ggplot2)
+  install.packages("ggplot2")
 }
 library(Rcpp)
 
