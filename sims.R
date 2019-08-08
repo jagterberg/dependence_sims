@@ -13,14 +13,14 @@ simulate_Erdos_renyi <- function(n,p) {
 Rcpp::sourceCpp("generate_corr_sbm.cpp")
 print("Sourced C++ Code, beginning simulations...")
 
-ns <- seq(500,10000,500)
+ns <- seq(500,6000,500)
 #n <- 4000
 p <- .05
 a <- .03
 b <- .07
 corr = .4
 
-sims <- 50
+sims <- 10
 
 vech1 <- rep(0,length(ns))
 vech2 <- rep(0,length(ns))
