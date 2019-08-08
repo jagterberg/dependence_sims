@@ -29,7 +29,7 @@ vech1 <- rep(0,length(ns))
 vech2 <- rep(0,length(ns))
 j <- 1
 for (n in ns) {
-  omega <- log(n)
+  
   print(paste0("simulations for n = ",n))
   for (i in 1:sims) {
     
@@ -40,7 +40,8 @@ for (n in ns) {
     uhat_naive <- uhat_naive$u
     
     #Mhat_better <- Mhat_naive
-    diag(Mhat_naive[c( (n+1):(2*n)), c((n+1):(2*n))]) <- rep(omega,n)
+    omega <- rowSums(A1 == A2)
+    diag(Mhat_naive[c( (n+1):(2*n)), c((n+1):(2*n))]) <- omega/n
     uhat_better <- irlba(Mhat_naive,1,1)
     uhat_better <- uhat_better$u
     
