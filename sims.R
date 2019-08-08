@@ -2,6 +2,7 @@ library(Matrix)
 library(irlba)
 if (!require(ggplot2)) {
   install.packages("ggplot2")
+  library(ggplot2)
 }
 library(Rcpp)
 
@@ -43,8 +44,8 @@ for (n in ns) {
     uhat_better <- irlba(Mhat_naive,1,1)
     uhat_better <- uhat_better$u
     
-    vech1[j] <- vech1[j] + min(min(abs(sqrt(n)*uhat_better - 1),min(abs(sqrt(n)*uhat_better + 1))))
-    vech2[j] <- vech2[j] + min(min(abs(sqrt(n)*uhat_naive - 1),min(abs(sqrt(n)*uhat_naive + 1))))
+    vech1[j] <- vech1[j] + min(min(abs(sqrt(2*n)*uhat_better - 1),min(abs(sqrt(2*n)*uhat_better + 1))))
+    vech2[j] <- vech2[j] + min(min(abs(sqrt(2*n)*uhat_naive - 1),min(abs(sqrt(2*n)*uhat_naive + 1))))
   }
   vech1[j] <- vech1[j]/sims
   vech2[j] <- vech2[j]/sims
@@ -52,7 +53,7 @@ for (n in ns) {
   
 }
 
-library(ggplot2)
+
 
 
 dat <- data.frame(naive = vech2,off_diag =vech2,n = ns)
