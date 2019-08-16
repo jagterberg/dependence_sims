@@ -4,10 +4,10 @@ if (!require(ggplot2)) {
   install.packages("ggplot2")
   library(ggplot2)
 }
-if(!require(pushoverr)) {
-  install.packages("pushoverr")
-  library(pushoverr)
-}
+#if(!require(pushoverr)) {
+#  install.packages("pushoverr")
+#  library(pushoverr)
+#}
 
 library(Rcpp)
 
@@ -18,21 +18,21 @@ simulate_Erdos_renyi <- function(n,p) {
   return(A)
 }
 
-title <- "omega = logn"
+title <- "omega = I(both are 1)"
 
 Rcpp::sourceCpp("generate_corr_sbm.cpp")
 print("Sourced C++ Code, beginning simulations...")
 
 set.seed(1234)
 
-ns <- seq(500,10000,500)
+ns <- seq(500,8000,500)
 #n <- 4000
 p <- .05
 a <- .03
 b <- .07
 corr = .4
 
-sims <- 100
+sims <- 10
 
 vech1 <- rep(0,length(ns))
 vech2 <- rep(0,length(ns))
@@ -49,7 +49,7 @@ for (n in ns) {
     uhat_naive <- uhat_naive$u
     
     #Mhat_better <- Mhat_naive
-    omega <- log(n)#rowSums(A1 == A2)
+    omega <- rowSums(A1 == 1 & A2==1)
     diag(Mhat_naive[c( (n+1):(2*n)), c((n+1):(2*n))]) <- omega
     uhat_better <- irlba(Mhat_naive,1,1)
     uhat_better <- uhat_better$u
@@ -76,8 +76,8 @@ save(dat,file = paste0(title,"_output.RData"))
 
 
 
-#load("output.RData)
-jpeg(paste0(title,'jpg'))
+#load(paste0(title,"_output.RData"))
+jpeg(paste0(title,'.jpg'))
 g <- ggplot(dat, aes(x = n))
 g +   geom_line(aes(y = naive, linetype = 'Variable Name A'),lwd = 1) +
   geom_line(aes(y = off_diag, linetype = 'Variable Name B'),lwd = 1)  +
@@ -98,8 +98,8 @@ dev.off()
 
 
 
-message <- paste0(title,' simulations finished.')
-pushover(message=message, user='u89ff6gbp38dg2key3p5q8x5qa5ndu', app='ajg6age36i9jnqxwbaw7izjy845hd3')
+#message <- paste0(title,' simulations finished.')
+#pushover(message=message, user='u89ff6gbp38dg2key3p5q8x5qa5ndu', app='ajg6age36i9jnqxwbaw7izjy845hd3')
   
   
   
