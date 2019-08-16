@@ -18,7 +18,7 @@ simulate_Erdos_renyi <- function(n,p) {
   return(A)
 }
 
-title <- "omega = I(both are 1)"
+title <- "omega_both_1_or_0"
 
 Rcpp::sourceCpp("generate_corr_sbm.cpp")
 print("Sourced C++ Code, beginning simulations...")
@@ -49,7 +49,7 @@ for (n in ns) {
     uhat_naive <- uhat_naive$u
     
     #Mhat_better <- Mhat_naive
-    omega <- rowSums(A1 == 1 & A2==1)
+    omega <- rowSums(A1 ==  A2)/n
     diag(Mhat_naive[c( (n+1):(2*n)), c((n+1):(2*n))]) <- omega
     uhat_better <- irlba(Mhat_naive,1,1)
     uhat_better <- uhat_better$u
