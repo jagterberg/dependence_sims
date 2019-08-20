@@ -4,10 +4,6 @@ if (!require(ggplot2)) {
   install.packages("ggplot2")
   library(ggplot2)
 }
-#if(!require(pushoverr)) {
-#  install.packages("pushoverr")
-#  library(pushoverr)
-#}
 
 library(Rcpp)
 
@@ -27,9 +23,9 @@ set.seed(1234)
 
 ns <- seq(500,8000,500)
 #n <- 4000
-p <- .05
-a <- .03
-b <- .07
+p <- .2
+a <- .3
+b <- .1
 corr = .4
 
 sims <- 10
@@ -45,17 +41,19 @@ for (n in ns) {
     A1 <- simulate_Erdos_renyi(n,p)
     A2 <- Matrix(simulate_corr_SBM(a,b,as.matrix(A1),corr,p))
     Mhat_naive <- bdiag(A1,A2)
-    uhat_naive <- irlba(Mhat_naive,1,1)
-    uhat_naive <- uhat_naive$u
+    uhat_naive <- irlba(Mhat_naive,2)
+    uhat_naive <- uhat_naive$u[,c(1,2)]
+    uhat_naive <- c(uhat_naive[c(1:n),1],uhat_naive[c((n+1):(2*n)),2])
     
     #Mhat_better <- Mhat_naive
     omega <- rowSums(A1 ==  A2)/n
     diag(Mhat_naive[c( (n+1):(2*n)), c((n+1):(2*n))]) <- omega
-    uhat_better <- irlba(Mhat_naive,1,1)
-    uhat_better <- uhat_better$u
+    uhat_better <- irlba(Mhat_naive,2)
+    uhat_better <- uhat_better$u[,c(1,2)]
+    uhat_better <- c(uhat_better[c(1:n),1],uhat_better[c((n+1):(2*n)),2])
     
-    vech1[j] <- vech1[j] + min(min(abs(sqrt(2*n)*uhat_better - 1),min(abs(sqrt(2*n)*uhat_better + 1))))
-    vech2[j] <- vech2[j] + min(min(abs(sqrt(2*n)*uhat_naive - 1),min(abs(sqrt(2*n)*uhat_naive + 1))))
+    vech1[j] <- vech1[j] + min(max(abs(uhat_better - 1/sqrt(n))),max(abs(uhat_better + 1/sqrt(n))))
+    vech2[j] <- vech2[j] + min(max(abs(uhat_naive - 1/sqrt(n))),max(abs(uhat_naive + 1/sqrt(n))))
   }
   vech1[j] <- vech1[j]/sims 
   vech2[j] <- vech2[j]/sims
@@ -67,6 +65,7 @@ for (n in ns) {
 
 
 dat <- data.frame(naive = vech2,off_diag =vech1,n = ns)
+#dat$theoretical <- log(dat$n)/dat$n
 
 save(dat,file = paste0(title,"_output.RData"))
   
@@ -79,8 +78,9 @@ save(dat,file = paste0(title,"_output.RData"))
 #load(paste0(title,"_output.RData"))
 jpeg(paste0(title,'.jpg'))
 g <- ggplot(dat, aes(x = n))
-g +   geom_line(aes(y = naive, linetype = 'Variable Name A'),lwd = 1) +
-  geom_line(aes(y = off_diag, linetype = 'Variable Name B'),lwd = 1)  +
+g +   geom_line(aes(y = naive, color = 'Variable Name A'),lwd = 1) +
+  geom_line(aes(y = off_diag, color = 'Variable Name B'),lwd = 1)  +
+  geom_line(aes(y = theoretical, color = 'Variable Name C'),lwd = 1)  +
   theme_bw() +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
   theme(plot.title = element_text(size = 10,hjust = 0.5))+
@@ -88,8 +88,8 @@ g +   geom_line(aes(y = naive, linetype = 'Variable Name A'),lwd = 1) +
   ylab('Error')  + xlab('n') +
   theme(axis.title.y = element_text(size = 10)) +
   theme(axis.title.x = element_text(size =10)) +
-  scale_linetype_manual(values = c('dashed','solid'),
-                        labels= c('naive estimage','padded off-diagonal')
+  scale_color_manual(values = c('purple','orange','black'),
+                        labels= c('naive estimage','padded off-diagonal','theoretical max')
                         ,name = "") 
 
 dev.off()
