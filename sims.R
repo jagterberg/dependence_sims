@@ -14,7 +14,7 @@ simulate_Erdos_renyi <- function(n,p) {
   return(A)
 }
 
-title <- "omega_both_1_or_0"
+title <- "omega_both_1"
 
 Rcpp::sourceCpp("generate_corr_sbm.cpp")
 print("Sourced C++ Code, beginning simulations...")
@@ -46,7 +46,7 @@ for (n in ns) {
     uhat_naive <- c(uhat_naive[c(1:n),1],uhat_naive[c((n+1):(2*n)),2])
     
     #Mhat_better <- Mhat_naive
-    omega <- rowSums(A1 ==  A2)/n
+    omega <- rowSums(A1 == 1 && A2 == 1)
     diag(Mhat_naive[c( (n+1):(2*n)), c((n+1):(2*n))]) <- omega
     uhat_better <- irlba(Mhat_naive,2)
     uhat_better <- uhat_better$u[,c(1,2)]
@@ -80,7 +80,7 @@ jpeg(paste0(title,'.jpg'))
 g <- ggplot(dat, aes(x = n))
 g +   geom_line(aes(y = naive, color = 'Variable Name A'),lwd = 1) +
   geom_line(aes(y = off_diag, color = 'Variable Name B'),lwd = 1)  +
-  geom_line(aes(y = theoretical, color = 'Variable Name C'),lwd = 1)  +
+  #geom_line(aes(y = theoretical, color = 'Variable Name C'),lwd = 1)  +
   theme_bw() +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
   theme(plot.title = element_text(size = 10,hjust = 0.5))+
@@ -88,8 +88,8 @@ g +   geom_line(aes(y = naive, color = 'Variable Name A'),lwd = 1) +
   ylab('Error')  + xlab('n') +
   theme(axis.title.y = element_text(size = 10)) +
   theme(axis.title.x = element_text(size =10)) +
-  scale_color_manual(values = c('purple','orange','black'),
-                        labels= c('naive estimage','padded off-diagonal','theoretical max')
+  scale_color_manual(values = c('orange','black'),
+                        labels= c('naive estimage','padded off-diagonal')
                         ,name = "") 
 
 dev.off()
