@@ -1,0 +1,26 @@
+Loading required package: ggplot2
+[1] "Sourced C++ Code, beginning simulations..."
+[1] "simulations for n = 500"
+Error in A1 == 1 && A2 == 1 : invalid 'x' type in 'x && y'
+Calls: rowSums
+Execution halted
+Loading required package: ggplot2
+[1] "Sourced C++ Code, beginning simulations..."
+[1] "simulations for n = 500"
+[1] "simulations for n = 1000"
+[1] "simulations for n = 1500"
+[1] "simulations for n = 2000"
+[1] "simulations for n = 2500"
+[1] "simulations for n = 3000"
+[1] "simulations for n = 3500"
+[1] "simulations for n = 4000"
+[1] "simulations for n = 4500"
+[1] "simulations for n = 5000"
+[1] "simulations for n = 5500"
+[1] "simulations for n = 6000"
+[1] "simulations for n = 6500"
+[1] "simulations for n = 7000"
+[1] "simulations for n = 7500"
+[1] "simulations for n = 8000"
+null device 
+          1 
