@@ -46,7 +46,7 @@ for (n in ns) {
     uhat_naive <- c(uhat_naive[c(1:n),1],uhat_naive[c((n+1):(2*n)),2])
     
     #Mhat_better <- Mhat_naive
-    omega <- rowSums(A1 == 1 && A2 == 1)
+    omega <- rowSums(A1 == 1 & A2 == 1)
     diag(Mhat_naive[c( (n+1):(2*n)), c((n+1):(2*n))]) <- omega
     uhat_better <- irlba(Mhat_naive,2)
     uhat_better <- uhat_better$u[,c(1,2)]
