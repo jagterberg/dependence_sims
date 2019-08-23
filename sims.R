@@ -1,5 +1,11 @@
-library(Matrix)
-library(irlba)
+if(!require(Matrix)) {
+  install.packages("Matrix")
+  library(Matrix)
+}
+if(!require(irlba)) {
+  install.packages("irlba")
+  library(irlba)
+}
 if (!require(ggplot2)) {
   install.packages("ggplot2")
   library(ggplot2)
@@ -14,7 +20,7 @@ simulate_Erdos_renyi <- function(n,p) {
   return(A)
 }
 
-title <- "omega_logn"
+title <- "omega_logn_spectral"
 
 Rcpp::sourceCpp("generate_corr_sbm.cpp")
 print("Sourced C++ Code, beginning simulations...")
@@ -43,17 +49,25 @@ for (n in ns) {
     Mhat_naive <- bdiag(A1,A2)
     uhat_naive <- irlba(Mhat_naive,2)
     uhat_naive <- uhat_naive$u[,c(1,2)]
-    uhat_naive <- c(uhat_naive[c(1:n),1],uhat_naive[c((n+1):(2*n)),2])
+    #uhat_naive <- c(uhat_naive[c(1:n),1],uhat_naive[c((n+1):(2*n)),2])
     
     #Mhat_better <- Mhat_naive
     omega <- log(n) #rowSums(A1 == 1 & A2 == 1)
     diag(Mhat_naive[c( (n+1):(2*n)), c((n+1):(2*n))]) <- omega
     uhat_better <- irlba(Mhat_naive,2)
     uhat_better <- uhat_better$u[,c(1,2)]
-    uhat_better <- c(uhat_better[c(1:n),1],uhat_better[c((n+1):(2*n)),2])
+    #uhat_better <- c(uhat_better[c(1:n),1],uhat_better[c((n+1):(2*n)),2])
     
-    vech1[j] <- vech1[j] + min(max(abs(uhat_better - 1/sqrt(n))),max(abs(uhat_better + 1/sqrt(n))))
-    vech2[j] <- vech2[j] + min(max(abs(uhat_naive - 1/sqrt(n))),max(abs(uhat_naive + 1/sqrt(n))))
+    mat1 <- tcrossprod(uhat_naive) - bdiag( tcrossprod(rep(1/sqrt(n),n)),tcrossprod(rep(1/sqrt(n),n)))
+    mat2 <- tcrossprod(uhat_better) - bdiag( tcrossprod(rep(1/sqrt(n),n)),tcrossprod(rep(1/sqrt(n),n)))
+    
+    
+    #vech1[j] <- vech1[j] + min(max(abs(uhat_better - 1/sqrt(n))),max(abs(uhat_better + 1/sqrt(n))))
+    #vech2[j] <- vech2[j] + min(max(abs(uhat_naive - 1/sqrt(n))),max(abs(uhat_naive + 1/sqrt(n))))
+    
+    vech1[j] <- vech1[j] + norm(mat1,"2")
+    vech2[j] <- vech2[j] + norm(mat2,"2")
+    
   }
   vech1[j] <- vech1[j]/sims 
   vech2[j] <- vech2[j]/sims
@@ -64,7 +78,7 @@ for (n in ns) {
 
 
 
-dat <- data.frame(naive = vech2,off_diag =vech1,n = ns)
+dat <- data.frame(naive = vech1,off_diag =vech2,n = ns)
 #dat$theoretical <- log(dat$n)/dat$n
 
 save(dat,file = paste0(title,"_output.RData"))
@@ -84,7 +98,7 @@ g +   geom_line(aes(y = naive, color = 'Variable Name A'),lwd = 1) +
   theme_bw() +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+
   theme(plot.title = element_text(size = 10,hjust = 0.5))+
-  ggtitle( 'Estimated Eigenvectors Minus true eigenvectors error (up to sign)') +
+  ggtitle( 'Spectral Norm of Difference of Projection Matrices') +
   ylab('Error')  + xlab('n') +
   theme(axis.title.y = element_text(size = 10)) +
   theme(axis.title.x = element_text(size =10)) +
